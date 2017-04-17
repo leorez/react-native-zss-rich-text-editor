@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import WebViewBridge from 'react-native-webview-bridge-updated';
+import WebViewBridge from 'react-native-webview-bridge';
 import {InjectedMessageHandler} from './WebviewMessageHandler';
 import {actions, messages} from './const';
 import {Modal, View, Text, StyleSheet, TextInput, TouchableOpacity, Platform, PixelRatio, Keyboard, Dimensions} from 'react-native';
@@ -296,7 +296,6 @@ export default class RichTextEditor extends Component {
         <WebViewBridge
           {...this.props}
           hideKeyboardAccessoryView={true}
-          keyboardDisplayRequiresUserAction={false}
           ref={(r) => {this.webviewBridge = r}}
           onBridgeMessage={(message) => this.onBridgeMessage(message)}
           injectedJavaScript={injectScript}
