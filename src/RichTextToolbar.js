@@ -1,6 +1,9 @@
 import React, {Component, PropTypes} from 'react';
 import {ListView, View, TouchableOpacity, Image, StyleSheet} from 'react-native';
 import {actions} from './const';
+import ImagePicker from 'react-native-image-picker';
+
+
 
 const defaultActions = [
   actions.insertImage,
@@ -165,19 +168,61 @@ export default class RichTextToolbar extends Component {
       case actions.insertLink:
         this.state.editor.prepareInsert();
         if(this.props.onPressAddLink) {
+          console.log('onPressAddLink');
           this.props.onPressAddLink();
         } else {
+          console.log('onPressAddLink not exist');
           this.state.editor.getSelectedText().then(selectedText => {
             this.state.editor.showLinkDialog(selectedText);
           });
         }
         break;
       case actions.insertImage:
+        console.log("case actions.insertImage");
         this.state.editor.prepareInsert();
         if(this.props.onPressAddImage) {
+          console.log("onPressAddImage ok");
           this.props.onPressAddImage();
+        } else {
+
+          // More info on all the options is below in the README...just some common use cases shown here
+          var options = {
+            title: 'Choose Image',
+            storageOptions: {
+              skipBackup: true,
+              path: 'images'
+            }
+          };
+
+          /**
+           * The first arg is the options object for customization (it can also be null or omitted for default options),
+           * The second arg is the callback which sends object: response (more info below in README)
+           */
+          ImagePicker.showImagePicker(options, (response) => {
+            console.log('Response = ', response);
+
+            if (response.didCancel) {
+              console.log('User cancelled image picker');
+            }
+            else if (response.error) {
+              console.log('ImagePicker Error: ', response.error);
+            }
+            else if (response.customButton) {
+              console.log('User tapped custom button: ', response.customButton);
+            }
+            else {
+              let source = { uri: response.uri };
+
+              let attr = { src: 'data:image/jpeg;base64,'+response.data };
+              // You can also display the image using data:
+              // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+              this.state.editor.insertImage(attr);
+              this.setState({
+                avatarSource: source
+              });
+            }
+          });
         }
-        break;
         break;
     }
   }
